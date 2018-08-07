@@ -6,117 +6,206 @@ output:
 ---
 
 
-<<<<<<< HEAD
-## Loading and preprocessing the data
-=======
 
 ## Loading and preprocessing the data
-```{r loading data, echo=TRUE}
+
+```r
 activity <- read.csv("activity.csv", header = TRUE, sep = ",")
 ```
-```{r change the date formatting}
+
+```r
 library(lubridate)
 ```
 
-```{r}
+```
+## 
+## Attaching package: 'lubridate'
+```
+
+```
+## The following object is masked from 'package:base':
+## 
+##     date
+```
+
+
+```r
 activity$date <- ymd(activity$date)
 ```
 
  And now we can create another version of the dataset where all NA values are removed
-```{r remove NAs}
+
+```r
 activity_rm_NA <- na.omit(activity)
 ```
->>>>>>> To commit final files
 
 
 
 ## What is mean total number of steps taken per day?
-<<<<<<< HEAD
-=======
-```{r load appropriate library}
+
+```r
 library(dplyr)
 ```
 
-```{r the total number of steps taken every day}
+```
+## 
+## Attaching package: 'dplyr'
+```
+
+```
+## The following objects are masked from 'package:lubridate':
+## 
+##     intersect, setdiff, union
+```
+
+```
+## The following objects are masked from 'package:stats':
+## 
+##     filter, lag
+```
+
+```
+## The following objects are masked from 'package:base':
+## 
+##     intersect, setdiff, setequal, union
+```
+
+
+```r
  num_daily_steps <- summarise(group_by(activity_rm_NA, date), sum_steps = sum(steps))
 View(num_daily_steps)
 ```
 
-```{r plot_the_results}
+
+```r
 plot(num_daily_steps, type = "h", col = "navy blue", lwd = 3, xlab = "Date", ylab = "Total number of Daily Steps" )
 ```
 
-```{r Calculating the mean and median for the total number of daily steps}
+![](PA1_template_files/figure-html/plot_the_results-1.png)<!-- -->
+
+
+```r
 mean_activity <- mean(num_daily_steps$sum_steps)
 print(mean_activity)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median_activity <- median(num_daily_steps$sum_steps)
 print(median_activity)
 ```
->>>>>>> To commit final files
+
+```
+## [1] 10765
+```
 
 
 
 ## What is the average daily activity pattern?
-<<<<<<< HEAD
-=======
 in order to make a plot of the 5-minute interval and the average number of steps taken in each
-```{r}
+
+```r
   steps_per_interval <- summarise(group_by(activity_rm_NA, interval), mean_interval = mean(steps))
   plot(steps_per_interval, type = "l", xlab = "5-minute Intervals", ylab ="Average number of steps", lwd = 3, col = "red")
 ```
 
-```{r to find out which interval, on average, contains the maximum number of steps}
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png)<!-- -->
+
+
+```r
 steps_per_interval[which.max(steps_per_interval$mean_interval),]
 ```
->>>>>>> To commit final files
+
+```
+## # A tibble: 1 x 2
+##   interval mean_interval
+##      <int>         <dbl>
+## 1      835           206
+```
 
 
 
 ## Imputing missing values
-<<<<<<< HEAD
-=======
-```{r to calculate the total number of missing values(NA)}
+
+```r
 sum(is.na(activity))
 ```
 
+```
+## [1] 2304
+```
+
 and now we will create a new dataset (activity2) with missing data (NA's) replaced with its respective 5-minute interval mean from table (steps_per_interval)
-```{r}
+
+```r
 activity2 <- activity
 activity2$steps[is.na(activity2$steps)] <- steps_per_interval$mean_interval
 ```
 
 To plot the total number of daily steps after replacing the NA values, we first create and new dataset (num_daily_steps2) with the sum of daily steps from (activity2)
-```{r}
+
+```r
 num_daily_steps2 <- summarise(group_by(activity2, date), sum_steps2 = sum(steps))
 ```
 
 Then we can plot the results
-```{r}
+
+```r
 plot(num_daily_steps2, type = "h", col = "navy blue", lwd = 3, xlab = "Date", ylab = "Total number of Daily Steps" )
 ```
 
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png)<!-- -->
+
 And then let's calculate the mean and the median of new dataset (num_daily_steps2)
-```{r, results="show"}
+
+```r
 mean(num_daily_steps2$sum_steps2)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 mean(num_daily_steps$sum_steps)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(num_daily_steps2$sum_steps2)
+```
+
+```
+## [1] 10766.19
+```
+
+```r
 median(num_daily_steps$sum_steps)
 ```
+
+```
+## [1] 10765
+```
  From the results above we can see that imputing the missing data didn't have effect on the estimates of the total daily number of steps.
->>>>>>> To commit final files
 
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
-<<<<<<< HEAD
-=======
 To create a new factor variable that distinguishes weekdays from weekends
-```{r}
+
+```r
 activity <- mutate(activity, day_of_week = weekdays(activity$date))
 ```
 
 And now to make a panel plot of the 5-minute interval and the average number of steps on both weekdays and weekends, we first create 2 datasets for (weekdays and weekends), and calculate the average number of steps by interval in each:
-```{r}
+
+```r
 activity_weekend <- filter(activity, day_of_week == c("Saturday", "Sunday"))
 
 weekend_perinterval <- summarise(group_by(na.omit(activity_weekend), interval), mean_interval = mean(steps))
@@ -128,9 +217,11 @@ weekday_perinterval <- summarise(group_by(na.omit(activity_weekday), interval), 
 ```
 
 And then we can create the plot
-```{r}
+
+```r
 par(mfrow = c(2,1), mar = c(1, 1, 1, 1), cex.main = 1)
 plot(weekend_perinterval, type = "l", main = "Average n steps on Weekends", col = "darkblue")
 plot(weekday_perinterval, type = "l", main = "Average n steps on Weekdays", col = "darkblue")
 ```
->>>>>>> To commit final files
+
+![](PA1_template_files/figure-html/unnamed-chunk-9-1.png)<!-- -->
